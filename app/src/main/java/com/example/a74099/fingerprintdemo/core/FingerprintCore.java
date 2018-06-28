@@ -102,7 +102,7 @@ public class FingerprintCore {
                 @Override
                 public void onDataPrepared(FingerprintManager.CryptoObject cryptoObject) {
                     // 如果需要一开始就进行指纹识别，可以在秘钥数据创建之后就启动指纹认证
-                    // startAuthenticate(cryptoObject);
+//                     startAuthenticate(cryptoObject);
                 }
             });
         } catch (Throwable e) {
