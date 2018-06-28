@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initViews();
         initViewListeners();
         initFingerprintCore();
+        IntentFingerprint();
     }
 
     private void initFingerprintCore() {
@@ -172,10 +173,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (mKeyguardLockScreenManager == null) {
             return;
         }
-        if (!mKeyguardLockScreenManager.isOpenLockScreenPwd()){
+        if (!mKeyguardLockScreenManager.isOpenLockScreenPwd()) {
             toastTipMsg(R.string.fingerprint_not_set_unlock_screen_pws);
             FingerprintUtil.openFingerPrintSettingPage(this);
-           return;
+            return;
         }
         mKeyguardLockScreenManager.showAuthenticationScreen(this);
     }
@@ -214,6 +215,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    public void IntentFingerprint() {
+        if (mFingerprintCore.isSupport()) {
+            Intent intent = new Intent(this, LockOfApplicationActivity.class);
+            startActivity(intent);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == KeyguardLockScreenManager.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS) {
@@ -225,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
     @Override
     protected void onDestroy() {
         if (mFingerprintCore != null) {
