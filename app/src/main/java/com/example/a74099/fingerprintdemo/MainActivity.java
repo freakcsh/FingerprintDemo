@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == KeyguardLockScreenManager.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS) {
-            // Challenge completed, proceed with using cipher
+            // 测试完成后，继续使用密码
             if (resultCode == RESULT_OK) {
                 toastTipMsg(R.string.sys_pwd_recognition_success);
             } else {

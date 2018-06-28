@@ -70,8 +70,6 @@ public class CryptoObjectCreator {
                 try {
                     if (mCryptoObject != null) {
                         createKey();
-                        // Set up the crypto object for later. The object will be authenticated by use
-                        // of the fingerprint.
                         /**
                          * 为以后设置crypto对象。该物体将通过使用指纹认证。
                          */
@@ -94,16 +92,11 @@ public class CryptoObjectCreator {
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void createKey() {
-        // The enrolling flow for fingerprint. This is where you ask the user to set up fingerprint
-        // for your flow. Use of keys is necessary if you need to know if the set of
-        // enrolled fingerprints has changed.
         /**
          * 指纹注册流程。这是您要求用户为您的流设置指纹的地方。如果您需要知道登记的指纹是否已经更改，则需要使用密钥。
          */
         try {
             mKeyStore.load(null);
-            // Set the alias of the entry in Android KeyStore where the key will appear
-            // and the constrains (purposes) in the constructor of the Builder
             /**
              * 在Android KeyStore中设置条目的别名，其中显示密钥，构建器的构造函数中设置约束(目的)
              */
@@ -111,8 +104,6 @@ public class CryptoObjectCreator {
                     KeyProperties.PURPOSE_ENCRYPT |
                             KeyProperties.PURPOSE_DECRYPT)
                     .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                    // Require the user to authenticate with a fingerprint to authorize every use
-                    // of the key
                     /**
                      * 要求用户使用指纹进行身份验证，以授权每次使用密钥
                      */
