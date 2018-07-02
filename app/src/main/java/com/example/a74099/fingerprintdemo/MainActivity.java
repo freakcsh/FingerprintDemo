@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -48,19 +49,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         initViews();
         initViewListeners();
-        initFingerprintCore();
+//        initFingerprintCore();
         IntentFingerprint();
     }
 
     private void initFingerprintCore() {
-        mFingerprintCore = new FingerprintCore(this);
-        mFingerprintCore.setFingerprintManager(mResultListener);
+        if (mFingerprintCore == null) {
+            mFingerprintCore = new FingerprintCore(this);
+            mFingerprintCore.setFingerprintManager(mResultListener);
+        }
         mKeyguardLockScreenManager = new KeyguardLockScreenManager(this);
     }
 
     private FingerprintCore.IFingerprintResultListener mResultListener = new FingerprintCore.IFingerprintResultListener() {
         @Override
         public void onAuthenticateSuccess() {
+            Log.e("freak", "onAuthenticateSuccess() ");
             toastTipMsg(R.string.fingerprint_recognition_success);
             resetGuideViewState();
         }
@@ -82,6 +86,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
     };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
 
     private void toastTipMsg(int messageId) {
         if (mToast == null) {
@@ -124,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fingerprint_recognition_cancel = findViewById(R.id.fingerprint_recognition_cancel);
         fingerprint_recognition_sys_unlock = findViewById(R.id.fingerprint_recognition_sys_unlock);
         fingerprint_recognition_sys_setting = findViewById(R.id.fingerprint_recognition_sys_setting);
-
+        mFingerprintCore = new FingerprintCore(this);
     }
 
     @Override
@@ -195,19 +205,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 开始识别指纹
      */
     private void startFingerprintRecognition() {
+        Log.e("freak", "MainActivity startFingerprint()");
         if (mFingerprintCore.isSupport()) {
+            Log.e("freak", "MainActivity mFingerprintCore.isSupport()：" + mFingerprintCore.isSupport());
+            Log.e("freak", "MainActivity mFingerprintCore.isSupport()");
             if (!mFingerprintCore.isHardwareDetected()) {
+                Log.e("freak", "MainActivity isHardwareDetected()");
                 toastTipMsg(R.string.fingerprint_recognition_not_enrolled);
                 FingerprintUtil.openFingerPrintSettingPage(this);
                 return;
             }
+            Log.e("freak", "MainActivity mFingerprintCore.isSupport()外卖");
             toastTipMsg(R.string.fingerprint_recognition_tip);
             mFingerGuideTxt.setText(R.string.fingerprint_recognition_tip);
             mFingerGuideImg.setBackgroundResource(R.drawable.fingerprint_guide);
             if (mFingerprintCore.isAuthenticating()) {
                 toastTipMsg(R.string.fingerprint_recognition_authenticating);
+                Log.e("freak", "MainActivity isAuthenticating()");
             } else {
+                Log.e("freak", "MainActivity startAuthenticate()");
                 mFingerprintCore.startAuthenticate();
+                Log.e("freak", "MainActivity 调用startAuthenticate()");
             }
         } else {
             toastTipMsg(R.string.fingerprint_recognition_not_support);
@@ -217,8 +235,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void IntentFingerprint() {
         if (mFingerprintCore.isSupport()) {
-            Intent intent = new Intent(this, LockOfApplicationActivity.class);
-            startActivity(intent);
+            Log.e("freak","是否录入了至少一个指纹："+mFingerprintCore.hasEnrolledFingerprints());
+            if (!mFingerprintCore.hasEnrolledFingerprints()) {
+                initFingerprintCore();
+            } else {
+                Intent intent = new Intent(this, LockOfApplicationActivity.class);
+                startActivity(intent);
+            }
+
         }
     }
 

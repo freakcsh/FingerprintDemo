@@ -102,7 +102,7 @@ public class FingerprintCore {
                 @Override
                 public void onDataPrepared(FingerprintManager.CryptoObject cryptoObject) {
                     // 如果需要一开始就进行指纹识别，可以在秘钥数据创建之后就启动指纹认证
-//                     startAuthenticate(cryptoObject);
+                    startAuthenticate(cryptoObject);
                 }
             });
         } catch (Throwable e) {
@@ -122,6 +122,15 @@ public class FingerprintCore {
         } catch (Throwable e) {
         }
         return false;
+    }
+
+    /**
+     * 判断系统是否录入了指纹，至少有一个就是返回true
+     *
+     * @return
+     */
+    public boolean hasEnrolledFingerprints() {
+        return mFingerprintManager.hasEnrolledFingerprints();
     }
 
     /**
@@ -148,8 +157,13 @@ public class FingerprintCore {
         mFpResultListener = new WeakReference<IFingerprintResultListener>(fingerprintResultListener);
     }
 
+    /**
+     * 开始指纹验证
+     */
     public void startAuthenticate() {
+        Log.e("freak", "无参数startAuthenticate（）");
         startAuthenticate(mCryptoObjectCreator.getCryptoObject());
+
     }
 
     public boolean isAuthenticating() {
@@ -159,11 +173,18 @@ public class FingerprintCore {
     private void startAuthenticate(FingerprintManager.CryptoObject cryptoObject) {
         prepareData();
         mState = AUTHENTICATING;
+        Log.e("freak", "有参数startAuthenticate（）");
         try {
             mFingerprintManager.authenticate(cryptoObject, mCancellationSignal, 0, mAuthenticationCallback, null);
             notifyStartAuthenticateResult(true, "");
+            Log.e("freak", "没异常startAuthenticate（）");
         } catch (SecurityException e) {
+            Log.e("freak", "异常startAuthenticate（）");
             try {
+                /**
+                 * authenticate() 用于指纹验证
+                 * 	authenticate(FingerprintManager.CryptoObject crypto, CancellationSignal cancel, int flags, FingerprintManager.AuthenticationCallback callback, Handler handler)
+                 */
                 mFingerprintManager.authenticate(null, mCancellationSignal, 0, mAuthenticationCallback, null);
                 notifyStartAuthenticateResult(true, "");
             } catch (SecurityException e2) {
@@ -252,15 +273,14 @@ public class FingerprintCore {
     }
 
 
-
     private void onFailedRetry(int msgId, String helpString) {
         mFailedTimes++;
-        Log.i("TAG","on failed retry time " + mFailedTimes);
+        Log.i("TAG", "on failed retry time " + mFailedTimes);
         if (mFailedTimes > 5) { // 每个验证流程最多重试5次，这个根据使用场景而定，验证成功时清0
-            Log.i("TAG","on failed retry time more than 5 times");
+            Log.i("TAG", "on failed retry time more than 5 times");
             return;
         }
-        Log.i("TAG","onFailedRetry: msgId " + msgId + " helpString: " + helpString);
+        Log.i("TAG", "onFailedRetry: msgId " + msgId + " helpString: " + helpString);
         cancelAuthenticate();
         mHandler.removeCallbacks(mFailedRetryRunnable);
         mHandler.postDelayed(mFailedRetryRunnable, 300); // 每次重试间隔一会儿再启动
@@ -270,12 +290,13 @@ public class FingerprintCore {
         @Override
         public void run() {
             startAuthenticate(mCryptoObjectCreator.getCryptoObject());
+            Log.e("freak", "失败重新调用");
         }
     };
 
     public void cancelAuthenticate() {
         if (mCancellationSignal != null && mState != CANCEL) {
-            Log.i("TAG","cancelAuthenticate...");
+            Log.i("TAG", "cancelAuthenticate...");
             mState = CANCEL;
             mCancellationSignal.cancel();
             mCancellationSignal = null;

@@ -42,19 +42,19 @@ public class LockOfApplicationActivity extends AppCompatActivity implements View
         ll_back.setOnClickListener(this);
         tv_pw.setOnClickListener(this);
         tv_cancel.setOnClickListener(this);
-        initFingerprintCore();
-        startFingerprint();
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        initFingerprintCore();
+        startFingerprint();
     }
 
     private void initFingerprintCore() {
         mFingerprintCore = new FingerprintCore(this);
-        mFingerprintCore.setFingerprintManager(mResultListener);
+        mFingerprintCore.setFingerprintManager(mresultlistener);
         mKeyguardLockScreenManager = new KeyguardLockScreenManager(this);
     }
     /**
@@ -63,6 +63,7 @@ public class LockOfApplicationActivity extends AppCompatActivity implements View
     private void startFingerprint() {
         Log.e("freak","startFingerprint()");
         if (mFingerprintCore.isSupport()) {
+            Log.e("freak","mFingerprintCore.isSupport()："+mFingerprintCore.isSupport());
             Log.e("freak","mFingerprintCore.isSupport()");
             if (!mFingerprintCore.isHardwareDetected()) {
                 Log.e("freak","isHardwareDetected()");
@@ -78,8 +79,9 @@ public class LockOfApplicationActivity extends AppCompatActivity implements View
                 toastTipMsg(R.string.fingerprint_recognition_authenticating);
                 Log.e("freak","isAuthenticating()");
             } else {
-                Log.e("freak","startAuthenticate()");
+                Log.e("freak","LockOfApplicationActivity startAuthenticate()");
                 mFingerprintCore.startAuthenticate();
+                Log.e("freak","LockOfApplicationActivity 调用startAuthenticate()");
             }
         } else {
             Log.e("freak","mFingerprintCore.isSupport() else");
@@ -105,7 +107,7 @@ public class LockOfApplicationActivity extends AppCompatActivity implements View
     };
 
 
-    private FingerprintCore.IFingerprintResultListener mResultListener = new FingerprintCore.IFingerprintResultListener() {
+    private FingerprintCore.IFingerprintResultListener mresultlistener = new FingerprintCore.IFingerprintResultListener() {
         @Override
         public void onAuthenticateSuccess() {
             Log.e("freak","onAuthenticateSuccess() ");
@@ -153,6 +155,7 @@ public class LockOfApplicationActivity extends AppCompatActivity implements View
 
     @Override
     protected void onDestroy() {
+        Log.e("freak","onDestroy1");
         if (mFingerprintCore != null) {
             mFingerprintCore.onDestroy();
             mFingerprintCore = null;
@@ -161,9 +164,10 @@ public class LockOfApplicationActivity extends AppCompatActivity implements View
             mKeyguardLockScreenManager.onDestroy();
             mKeyguardLockScreenManager = null;
         }
-        mResultListener = null;
+        mresultlistener = null;
         mShowToastRunnable = null;
         mToast = null;
+        Log.e("freak","onDestroy2");
         super.onDestroy();
     }
 }
