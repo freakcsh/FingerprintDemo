@@ -61,30 +61,21 @@ public class LockOfApplicationActivity extends AppCompatActivity implements View
      * 开始识别指纹
      */
     private void startFingerprint() {
-        Log.e("freak","startFingerprint()");
         if (mFingerprintCore.isSupport()) {
-            Log.e("freak","mFingerprintCore.isSupport()："+mFingerprintCore.isSupport());
-            Log.e("freak","mFingerprintCore.isSupport()");
             if (!mFingerprintCore.isHardwareDetected()) {
-                Log.e("freak","isHardwareDetected()");
                 toastTipMsg(R.string.fingerprint_recognition_not_enrolled);
                 FingerprintUtil.openFingerPrintSettingPage(this);
                 return;
             }
-            Log.e("freak","mFingerprintCore.isSupport()外卖");
             toastTipMsg(R.string.fingerprint_recognition_tip);
 
             img_fingerprint.setBackgroundResource(R.drawable.fingerprint);
             if (mFingerprintCore.isAuthenticating()) {
                 toastTipMsg(R.string.fingerprint_recognition_authenticating);
-                Log.e("freak","isAuthenticating()");
             } else {
-                Log.e("freak","LockOfApplicationActivity startAuthenticate()");
                 mFingerprintCore.startAuthenticate();
-                Log.e("freak","LockOfApplicationActivity 调用startAuthenticate()");
             }
         } else {
-            Log.e("freak","mFingerprintCore.isSupport() else");
             toastTipMsg(R.string.fingerprint_recognition_not_support);
         }
     }
@@ -110,7 +101,6 @@ public class LockOfApplicationActivity extends AppCompatActivity implements View
     private FingerprintCore.IFingerprintResultListener mresultlistener = new FingerprintCore.IFingerprintResultListener() {
         @Override
         public void onAuthenticateSuccess() {
-            Log.e("freak","onAuthenticateSuccess() ");
             toastTipMsg(R.string.fingerprint_recognition_success);
             resetGuideViewState();
             finish();
@@ -118,7 +108,6 @@ public class LockOfApplicationActivity extends AppCompatActivity implements View
 
         @Override
         public void onAuthenticateFailed(int helpId) {
-            Log.e("freak","onAuthenticateFailed() ");
             toastTipMsg(R.string.fingerprint_recognition_failed);
         }
 
@@ -135,7 +124,6 @@ public class LockOfApplicationActivity extends AppCompatActivity implements View
     };
 
     private void resetGuideViewState() {
-        Log.e("freak","resetGuideViewState() ");
         img_fingerprint.setBackgroundResource(R.drawable.deblocking);
     }
     @Override
@@ -155,7 +143,6 @@ public class LockOfApplicationActivity extends AppCompatActivity implements View
 
     @Override
     protected void onDestroy() {
-        Log.e("freak","onDestroy1");
         if (mFingerprintCore != null) {
             mFingerprintCore.onDestroy();
             mFingerprintCore = null;
@@ -167,7 +154,6 @@ public class LockOfApplicationActivity extends AppCompatActivity implements View
         mresultlistener = null;
         mShowToastRunnable = null;
         mToast = null;
-        Log.e("freak","onDestroy2");
         super.onDestroy();
     }
 }

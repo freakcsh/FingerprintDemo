@@ -27,7 +27,8 @@ import javax.crypto.SecretKey;
  */
 
 public class CryptoObjectCreator {
-    private static final String KEY_NAME = "crypto_object_fingerprint_key";
+//    private static final String KEY_NAME = "crypto_object_fingerprint_key";
+    private static final String KEY_NAME = "freak_csh_key";
     /**
      * CryptoObject
      * FingerprintManager支持的加密对象的包装类。

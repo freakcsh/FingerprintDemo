@@ -205,27 +205,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 开始识别指纹
      */
     private void startFingerprintRecognition() {
-        Log.e("freak", "MainActivity startFingerprint()");
+
         if (mFingerprintCore.isSupport()) {
-            Log.e("freak", "MainActivity mFingerprintCore.isSupport()：" + mFingerprintCore.isSupport());
-            Log.e("freak", "MainActivity mFingerprintCore.isSupport()");
             if (!mFingerprintCore.isHardwareDetected()) {
-                Log.e("freak", "MainActivity isHardwareDetected()");
                 toastTipMsg(R.string.fingerprint_recognition_not_enrolled);
                 FingerprintUtil.openFingerPrintSettingPage(this);
                 return;
             }
-            Log.e("freak", "MainActivity mFingerprintCore.isSupport()外卖");
             toastTipMsg(R.string.fingerprint_recognition_tip);
             mFingerGuideTxt.setText(R.string.fingerprint_recognition_tip);
             mFingerGuideImg.setBackgroundResource(R.drawable.fingerprint_guide);
             if (mFingerprintCore.isAuthenticating()) {
                 toastTipMsg(R.string.fingerprint_recognition_authenticating);
-                Log.e("freak", "MainActivity isAuthenticating()");
             } else {
-                Log.e("freak", "MainActivity startAuthenticate()");
                 mFingerprintCore.startAuthenticate();
-                Log.e("freak", "MainActivity 调用startAuthenticate()");
             }
         } else {
             toastTipMsg(R.string.fingerprint_recognition_not_support);
@@ -235,7 +228,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void IntentFingerprint() {
         if (mFingerprintCore.isSupport()) {
-            Log.e("freak","是否录入了至少一个指纹："+mFingerprintCore.hasEnrolledFingerprints());
             if (!mFingerprintCore.hasEnrolledFingerprints()) {
                 initFingerprintCore();
             } else {
